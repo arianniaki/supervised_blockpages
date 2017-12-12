@@ -1,0 +1,145 @@
+\documentclass{article} % For LaTeX2e
+\usepackage{nips14submit_e,times}
+\usepackage{hyperref}
+\usepackage{url}
+%\usepackage[top=5mm]{geometry}
+\usepackage[style=authoryear-icomp,    bibstyle=numeric,, maxnames=1, backend=bibtex]{biblatex}
+\addbibresource{ml_project.bib}
+%\documentstyle[nips14submit_09,times,art10]{article} % For LaTeX 2.09
+
+
+\title{Supervised Learning Based Approach for Blocked Page Detection}
+
+\author{
+Arian Akhavan Niaki\\
+Department of Computer Science\\
+University of Massachuessets\\
+Pittsburgh, PA 15213 \\
+\texttt{hippo@cs.cranberry-lemon.edu} \\
+}
+% The \author macro works with any number of authors. There are two commands
+% used to separate the names and addresses of multiple authors: \And and \AND.
+%
+% Using \And between authors leaves it to \LaTeX{} to determine where to break
+% the lines. Using \AND forces a linebreak at that point. So, if \LaTeX{}
+% puts 3 of 4 authors names on the first line, and the last on the second
+% line, try using \AND instead of \And before the third author name.
+
+%\newcommand{\fix}{\marginpar{FIX}}
+%\newcommand{\new}{\marginpar{NEW}}
+
+%\nipsfinalcopy % Uncomment for camera-ready version
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The abstract paragraph should be indented 1/2~inch (3~picas) on both left and
+right-hand margins. Use 10~point type, with a vertical spacing of 11~points.
+The word \textbf{Abstract} must be centered, bold, and in point size 12. Two
+line spaces precede the abstract. The abstract must be limited to one
+paragraph.
+\end{abstract}
+\section{Problem}
+\vspace{-.2cm}
+Internet censorship often manifests in the form of \emph{blocked webpages} returned to users accessing
+content. These blocked pages vary in appearance and content depending on the technology used
+for censorship. Researchers have made attempts to
+characterize Internet censorship and have designed censorship circumvention tools. Such research relies on detecting blocked pages automatically.
+So far, the efforts
+towards blocked page detection have largely been heuristic based. These heuristic based techniques fall short of addressing many real world cases.
+We discuss these in further detail in Section~\ref{relatedwork}. Therefore, there is a need for improved techniques for identifying blocked
+pages that do not rely on manual heuristics.
+\vspace{-.2cm}
+\section{Methodology}
+\vspace{-.2cm}
+%\textbf{Baselines:}
+%We plan to use state-of-the-art heuristic based blocked page detection techniques as baselines for comparison with our learning model. We would
+%compare the accuracy (true positive) and false positive rate of our model with that of the length and similarity metric based blocked page detection.
+
+\textbf{Supervised Learning:}
+We will first apply basic classification techniques such as Logistic Regression and Support Vector Machines on a labeled dataset~\ref{dataset}.
+We will then proceed to design a neural network for classification.
+
+\textbf{Limitations:} A key limitation of this approach is that it requires us to label website screenshots as blocked pages manually. We plan to get around this by using unsupervised
+learning techniques.
+
+\textbf{Unsupervised Learning:}
+ Finally, we will apply an unsupervised learning technique
+such as the one in ~\cite{meerkat} that does not require feature selection, using Deep Neural Networks.
+
+\textbf{Window Selection:}
+Since the screenshots of websites can be large, the naive approach of training neural networks on entire screenshots will likely be slow.
+One way to avoid this is by selecting bounding boxes within the screenshots, capturing only the relevant portions of the website. For instance,
+large parts of the webpage can be occupied by advertisements which are irrelevant for our purpose. Therefore, we will investigate ways to select
+bounding boxes of different sizes to achieve high accuracy of classification with minimal training time.
+
+\textbf{Implementation:}
+We will implement the aforementioned models in Python using libraries like tensorflow and/or Pytorch. We will use the scikit-learn library for supervised classification techniques.
+\vspace{-.2cm}
+\section{Related Work}
+\vspace{-.2cm}
+\label{relatedwork}
+Recent work by ~\parencite{torabuse} detects blocked pages by computing the difference between images of a fully loaded website from a censored region and the same website loaded
+from a control server. This technique uses manual calibration of the threshold for difference between images to identify blocked pages.
+Such techniques are likely to fail in the presence of advertisements placed on the website. Differences in the appearance of websites
+based on client location can cause high false positive rates for blocked page detection (e.g. Google's homepage appears
+different when loaded in Russia as opposed to what can be seen in England). 
+~\parencite{imc14_phillipa} propose length differences between a censored page and its uncensored counterpart as a heuristic, 
+relying on the idea that blocked pages usually shorter than the original page.
+We did not find research on blocked page detection in the field of machine learning, however, machine learning techniques have been used
+for detecting website defacements by ~\parencite{meerkat}. The structure of their deep neural network was inspired by work from~\parencite{imagehinton},
+ \parencite{nipsandrewng} and \parencite{icmlandrewng}.
+\vspace{-.2cm}
+\section{Datasets}
+\vspace{-.2cm}
+\label{dataset}
+We use an automated Selenium based web crawler for collecting screenshots of Alexa Top 500 websites loaded synchronously from
+a control server and censored clients. We will manually label part of this dataset as \emph{blocked}
+or \emph{unblocked} and use it for supervised learning. We will also use this for testing our unsupervised approach.
+\vspace{-.2cm}
+\section{Experiments}
+\vspace{-.2cm}
+In order to evaluate the accuracy of our techniques, we intend to compare it with the state of the art blocked page detection
+techniques in ~\parencite{imc14_phillipa} and ~\parencite{torabuse}. In ~\parencite{imc14_phillipa} authors hypothesize that blocked pages tend
+to be shorter in length as compared to non-blocked pages. On the other hand, ~\parencite{torabuse} uses manual thresholding of
+a difference between website screenshots to detect blocked pages. We plan to take the threshold used by the authors 
+and compare the accuracy of their method with ours.
+\vspace{-.2cm}
+\section{Overlap Statement}
+\vspace{-.2cm}
+This work does not overlap with any existing projects we (or our group) is involved in.
+\vspace{-.2cm}
+\section{Collaboration Plan}
+\vspace{-.2cm}
+We plan to closely collaborate on all aspects of this project from obtaining our data set 
+to designing our neural network and finally performing the tests and writing the report. We do not
+think working in isolation on any of the tasks would suffice for this work.
+%
+%
+%
+%\subsubsection*{References}
+%
+%References follow the acknowledgments. Use unnumbered third level heading for
+%the references. Any choice of citation style is acceptable as long as you are
+%consistent. It is permissible to reduce the font size to `small' (9-point) 
+%when listing the references. {\bf Remember that this year you can use
+%a ninth page as long as it contains \emph{only} cited references.}
+%
+%\small{
+%[1] Alexander, J.A. \& Mozer, M.C. (1995) Template-based algorithms
+%for connectionist rule extraction. In G. Tesauro, D. S. Touretzky
+%and T.K. Leen (eds.), {\it Advances in Neural Information Processing
+%Systems 7}, pp. 609-616. Cambridge, MA: MIT Press.
+%
+%[2] Bower, J.M. \& Beeman, D. (1995) {\it The Book of GENESIS: Exploring
+%Realistic Neural Models with the GEneral NEural SImulation System.}
+%New York: TELOS/Springer-Verlag.
+%
+%[3] Hasselmo, M.E., Schnell, E. \& Barkai, E. (1995) Dynamics of learning
+%and recall at excitatory recurrent synapses and cholinergic modulation
+%in rat hippocampal region CA3. {\it Journal of Neuroscience}
+%{\bf 15}(7):5249-5262.
+%}
+\printbibliography
+\end{document}
