@@ -8,14 +8,14 @@
 %\documentstyle[nips14submit_09,times,art10]{article} % For LaTeX 2.09
 
 
-\title{Supervised Learning Based Approach for Blocked Page Detection}
+\title{A Supervised Learning Based Approach for Blockpage Detection}
 
 \author{
 Arian Akhavan Niaki\\
-Department of Computer Science\\
-University of Massachuessets\\
-Pittsburgh, PA 15213 \\
-\texttt{hippo@cs.cranberry-lemon.edu} \\
+College of Information and Computer Sciences\\
+University of Massachusetts\\
+140 Governors Dr., Amherst, MA 01003 \\
+\texttt{arian@cs.umass.edu} \\
 }
 % The \author macro works with any number of authors. There are two commands
 % used to separate the names and addresses of multiple authors: \And and \AND.
@@ -34,25 +34,16 @@ Pittsburgh, PA 15213 \\
 \maketitle
 
 \begin{abstract}
-The abstract paragraph should be indented 1/2~inch (3~picas) on both left and
-right-hand margins. Use 10~point type, with a vertical spacing of 11~points.
-The word \textbf{Abstract} must be centered, bold, and in point size 12. Two
-line spaces precede the abstract. The abstract must be limited to one
-paragraph.
+Current supervised learning approaches in machine learning literature have mostly concentrated on a single aspect data such as images or text, in which they use this data to train their designed neural network. However, combining these two data would improve performance in the case of missing data in either images or text. In this paper, we design and implement a deep neural network which takes both the images and text data in order to do blockpage detection. We compare our results to ... .We show that our model achieves X 
 \end{abstract}
-\section{Problem}
-\vspace{-.2cm}
-Internet censorship often manifests in the form of \emph{blocked webpages} returned to users accessing
-content. These blocked pages vary in appearance and content depending on the technology used
-for censorship. Researchers have made attempts to
-characterize Internet censorship and have designed censorship circumvention tools. Such research relies on detecting blocked pages automatically.
-So far, the efforts
-towards blocked page detection have largely been heuristic based. These heuristic based techniques fall short of addressing many real world cases.
-We discuss these in further detail in Section~\ref{relatedwork}. Therefore, there is a need for improved techniques for identifying blocked
-pages that do not rely on manual heuristics.
-\vspace{-.2cm}
+\section{Introduction}
+Extensive work has been done in supervised and unsupervised learning on both image and text classification. However, to the best of our knowledge, there does not exist an approach that applies supervised learning on a data set containing both images and textual data. This can be advantageous in the case where we either have missing data in the images or text. We see this case occurring in the field of Internet censorship and Tor discrimination.\\
+Internet censorship often manifests in the form of \emph{blocked webpages} returned to users accessing content. These blocked pages vary in appearance and content depending on the country. 
+Moreover, previous work has shown that users using anonymity systems such as Tor to access the Internet, receive discrimination in multiple forms such as CAPTCHAs, interaction based discrimination, and blockpages. \\
+Researchers have made attempts to characterize Internet censorship by detecting blockpages automatically. However, their efforts have largely been heuristic based and have shortcomings in distinguishing server errors from blockpages.\\
+In this paper, In order to detect and classify blockpages and accurately measure discrimination against users, we use a Selenium-based crawler to fetch the Alexa top 500 websites from X NUMBER of Tor Exists. We then design and implement a deep neural network which leverages both images and the HTML text of the webpages in order to a multi-class classification by detecting blockpages, server errors, connection errors, and legitimate web pages. In order to measure the performance and accuracy of our proposed model, we perform three experiments comparing the X METRICS of our model to a case where we use a state-of-the-art image classification deep neural net and a text classification deep neural net separately. We show that our system gets X results
+
 \section{Methodology}
-\vspace{-.2cm}
 %\textbf{Baselines:}
 %We plan to use state-of-the-art heuristic based blocked page detection techniques as baselines for comparison with our learning model. We would
 %compare the accuracy (true positive) and false positive rate of our model with that of the length and similarity metric based blocked page detection.
@@ -76,9 +67,7 @@ bounding boxes of different sizes to achieve high accuracy of classification wit
 
 \textbf{Implementation:}
 We will implement the aforementioned models in Python using libraries like tensorflow and/or Pytorch. We will use the scikit-learn library for supervised classification techniques.
-\vspace{-.2cm}
 \section{Related Work}
-\vspace{-.2cm}
 \label{relatedwork}
 Recent work by ~\parencite{torabuse} detects blocked pages by computing the difference between images of a fully loaded website from a censored region and the same website loaded
 from a control server. This technique uses manual calibration of the threshold for difference between images to identify blocked pages.
@@ -90,28 +79,26 @@ relying on the idea that blocked pages usually shorter than the original page.
 We did not find research on blocked page detection in the field of machine learning, however, machine learning techniques have been used
 for detecting website defacements by ~\parencite{meerkat}. The structure of their deep neural network was inspired by work from~\parencite{imagehinton},
  \parencite{nipsandrewng} and \parencite{icmlandrewng}.
-\vspace{-.2cm}
 \section{Datasets}
-\vspace{-.2cm}
 \label{dataset}
 We use an automated Selenium based web crawler for collecting screenshots of Alexa Top 500 websites loaded synchronously from
 a control server and censored clients. We will manually label part of this dataset as \emph{blocked}
 or \emph{unblocked} and use it for supervised learning. We will also use this for testing our unsupervised approach.
-\vspace{-.2cm}
+
 \section{Experiments}
-\vspace{-.2cm}
+
 In order to evaluate the accuracy of our techniques, we intend to compare it with the state of the art blocked page detection
 techniques in ~\parencite{imc14_phillipa} and ~\parencite{torabuse}. In ~\parencite{imc14_phillipa} authors hypothesize that blocked pages tend
 to be shorter in length as compared to non-blocked pages. On the other hand, ~\parencite{torabuse} uses manual thresholding of
 a difference between website screenshots to detect blocked pages. We plan to take the threshold used by the authors 
 and compare the accuracy of their method with ours.
-\vspace{-.2cm}
+
 \section{Overlap Statement}
-\vspace{-.2cm}
+
 This work does not overlap with any existing projects we (or our group) is involved in.
-\vspace{-.2cm}
+
 \section{Collaboration Plan}
-\vspace{-.2cm}
+
 We plan to closely collaborate on all aspects of this project from obtaining our data set 
 to designing our neural network and finally performing the tests and writing the report. We do not
 think working in isolation on any of the tasks would suffice for this work.
