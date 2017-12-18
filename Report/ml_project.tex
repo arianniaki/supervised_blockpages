@@ -190,9 +190,8 @@ f1 = 2 \cdot \dfrac{precision \cdot recall}{precision + recall}
 \end{align}
 
 
-\subsection{Hyperparameters and Training}
-We perform a grid search for hyperparameter tuning. More specifically, we take the learning rate and the structure of the fully-connected layers in the networks as our hyperparameters. For the learning rate, we consider $0.001$ and $0.0001$ values and for the fully-connected layers we consider (1) the case where we described our model architecture in ~\ref{ProposedNet} and (2) where we change the output size of the first fully-connected layer after the flatten process to $256$ then we add another fully-connected layer with the output size of $128$, finally we pass through another fully-connected layer with output size $4$. Therefore, for each experiment we will consider the effect of these hyperparameters.
-The results are shown in Table~\ref{tab:hyperparam} where $\alpha$ is the learning rate of the Adam algorithm.
+\subsection{hyper-parameters and Training}
+We perform a grid search for hyper-parameter tuning. More specifically, we take the learning rate ($\alpha$) and the structure of the fully-connected layers in the networks as our hyper-parameters. For the learning rate, we consider $0.001$ and $0.0001$ values and for the fully-connected layers we consider (1) the case where we described our model architecture in ~\ref{ProposedNet} and (2) where we change the output size of the first fully-connected layer after the flatten process to $256$ then we add another fully-connected layer with the output size of $128$, finally we pass through another fully-connected layer with output size $4$. Therefore, for each experiment we will consider the effect of these hyper-parameters. We also apply a early stopping technique to our experiments. If the value of validation loss does not improve in 7 subsequent epochs we do not continue and report the performance metric values when running our test data on the model's best weights.The results are shown in table~\ref{tab:hyperparam}
 \begin{table}
   \centering
   \resizebox{\columnwidth}{!}{%
@@ -261,6 +260,13 @@ The results are shown in Table~\ref{tab:hyperparam} where $\alpha$ is the learni
 \end{table}
 
 \section{Results}
+First, we conduct the hyper-parameter tuning described earlier for our approach and the image and text classification CNNs. It is clear from table~\ref{tab:hyperparam} that 
+the best parameters for our approach, the image classification CNN, and the text classification CNN are X , Y and X respectively. We use the same train/test split for evaluating the experiments mentioned in the ~\ref{experiments} section. Now that we have the optimized hyper-parameters for all of our approaches, we can conduct a proper comparison of the performance metrics.
+\subsection{Performance metrics}
+
+\subsection{Confusion Matrix}
+
+
 
 
 
