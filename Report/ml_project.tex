@@ -11,7 +11,9 @@
 \usepackage{siunitx}
 \usepackage{colortbl}
 \definecolor{kugray5}{RGB}{224,224,224}
-
+\usepackage{graphics}
+\usepackage{caption}
+\usepackage{subcaption}
 
 \DeclarePairedDelimiter\ceil{\lceil}{\rceil}
 
@@ -129,31 +131,49 @@ The second convolutional layer applies a filter using $64$ kernels of $1\times8\
 \end{figure}
 
 \subsection{Proposed Neural Network}
+  \label{ProposedNet}
+
 Our network as depicted in Figure~\ref{fig:CNN} first receives the HTML document and the Image of the web page. It then feeds the input into the two separate CNNs. If either the HTML document is blank we feed a $1\times200\times300$ zero vector to the text classification CNN and the associating screenshot to the image classification CNN. There exists cases where we have the legitimate HTML document of the web page but the screenshot is a white picture, we proceed as before and feed each of the inputs to the appropriate CNN. Our model concatenates the output of the second fully-connected layer of both inputs and feeds
 them as an input to another fully-connected layer we again apply a dropout of $0.5$ and go through one last fully-connected layer. A 4-way softmax function is applied to the output of the last fully-connected layer to predict the class label.
-\begin{figure}[!htb]
-\minipage{0.25\textwidth}
-  \includegraphics[width=\linewidth]{ok.png}
-  \caption{Ok image}\label{fig:ok}
-\endminipage\hfill
-\minipage{0.25\textwidth}
-  \includegraphics[width=\linewidth]{block.png}
-  \caption{Block page}\label{fig:block}
-\endminipage\hfill
-\minipage{0.25\textwidth}%
-  \includegraphics[width=\linewidth]{servererr.png}
-  \caption{Server error}\label{fig:servererr}
-\endminipage
-\minipage{0.25\textwidth}%
-  \includegraphics[width=\linewidth]{connectionerr.png}
-  \caption{Connection error}\label{fig:connectionerr}
-\endminipage
-\end{figure}
+
 \section{Datasets} 
 \label{datasets}
-We use an automated Selenium based web crawler written in Python for collecting screenshots and the HTML documents of Alexa\footnote{https://www.alexa.com/topsites} top $500$ web pages from a control host and 50 Tor~\cite{tor} exit relays located in 23 countries. Our control host does not connect to Tor exit relays and is located in an uncensored network in the US. Our crawls took place in November of 2017 and the dataset consists of $21246$ screenshots and their associated HTML documents. Glancing at the screenshots we can clearly see 4 types of pages. (1) the Tor user can access the website like a non-Tor user which we see in Figure~\ref{fig:ok}, we label these pages as \textit{ok}. (2) the Tor user reaches a server error page which we label with \textit{servererr} an example of these pages is shown in Figure~\ref{fig:servererr}. (3) the Tor user gets a connection failed or timeout page, we label these as \textit{connectionerr}. A sample connection error page is depicted in Figure~\ref{fig:connectionerr} and finally (4) the Tor user gets a block page or a page containing some form of CAPTCHA which we label as \textit{block} that can be seen in Figure~\ref{fig:block}.
+We use an automated Selenium based web crawler written in Python for collecting screenshots and the HTML documents of Alexa\footnote{https://www.alexa.com/topsites} top $500$ web pages from a control host and 50 Tor~\cite{tor} exit relays located in 23 countries. Our control host does not connect to Tor exit relays and is located in an uncensored network in the US. Our crawls took place in November of 2017 and the dataset consists of $21246$ screenshots and their associated HTML documents. Glancing at the screenshots we can clearly see 4 types of pages. (1) the Tor user can access the website like a non-Tor user which we see in Figure~\ref{fig:sample_dataset}, we label these pages as \textit{ok}. (2) the Tor user reaches a server error page which we label with \textit{servererror} an example of these pages is shown in Figure~\ref{fig:servererr}(a). (3) the Tor user gets a connection failed or timeout page, we label these as \textit{connectionerror}. A sample connection error page is depicted in Figure~\ref{fig:connectionerr} and finally (4) the Tor user gets a block page or a page containing some form of CAPTCHA which we label as \textit{block} that can be seen in Figure~\ref{fig:blockpage}.
 Our images have variable-resolutions, therefore we rescale our images to $160\times160$. We do not crop the center of each image, because many of the server error pages have content shown in the top part of the page. No pre-processing or data augmentation is done on our data and we only use the raw RGB values of the pixels as our image inputs. For the HTML documents, we take out the \textit{body} section of the page and parse over the first 200 words and provide this as our text inputs. This is because of the fact that the text content in an HTML document is available in the body section. We manually label our dataset by knowing that block pages usually have less length than a normal page~\cite{imc14_phillipa}.
 
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.2\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{ok.png}
+        \caption{Ok web page}
+        \label{fig:okpage}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.2\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{block.png}
+        \caption{Block page}
+        \label{fig:blockpage}
+    \end{subfigure}
+    \hfill
+        \hfill
+    \begin{subfigure}[b]{0.2\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{connectionerr.png}
+        \caption{Connection error page}
+        \label{fig:connectionerror}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.2\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{servererr.png}
+        \caption{Server error page}
+        \label{fig:servererror}
+    \end{subfigure}
+    \caption{Samples of our dataset}
+    \label{fig:sample_dataset}
+\end{figure}
 \section{Experiments}
 \label{experiments}
 In order to evaluate the performance of our proposed model, we compare it using a set of performance metrics with (1) CNN for image classification (2) CNN for text classification (3) prior work for block page detection. We conduct all the experiments on the previously mentioned dataset where we take 80\% of the data randomly as training and set aside the remaining 20\% for the test phase. Out of the 80\% for training, 25\% is also set for validation. Our hypothesis is that the designed CNN should perform better than the CNNs for image and for text classification. The reason being that there are cases where either the image or the text is missing for a data case and our proposed CNN would be more beneficial than a single CNN only focusing on text or image. Finally, since previous techniques for block page detection were only heuristic based and had false positives, our method is designed to classify web pages into 4 distinct classes more accurately. In all experiments, the training batch size, validation batch size and test batch size are 1077 and we will apply X number of epochs.
@@ -171,50 +191,78 @@ f1 = 2 \cdot \dfrac{precision \cdot recall}{precision + recall}
 
 
 \subsection{Hyperparameters and Training}
-We perform a grid search for hyperparameter tuning. More specifically, we take the learning rate and the size of the first fully-connected layer after the flatten process in the networks as our hyperparameters. For the learning rate, we consider $0.001$ and $0.0001$ values and for the size of the fully-connected layers we consider $256$ and $128$. Therefore, for each experiment we will consider the effect of these hyperparameters.
-\section{Results}
-The results of our experiments are listed in table ~\ref{resultifg}
-\begin{center}
-
-\begin{tabular}{lccc ccc ccc ccc ccc}
-\hline
- & \multicolumn{3}{c}{Females} && \multicolumn{3}{c}{Males} && \multicolumn{3}{c}{Males} && \multicolumn{3}{c}{Males} \\
-\cline{2-4} \cline{6-8}  \cline{10-12}  \cline{12-14}
-Treatment     & V1   & V2  & V3 & V4 & V5 && V1   & V2  & V3 & V4 & V5 \\
-Placebo       & 0.21 & 163 & 3  & 4  & 5  && 0.22 & 164 & 3  & 4  & 5  \\
-ACE Inhibitor & 0.13 & 142 & 3  & 4  & 5  && 0.15 & 144 & 3  & 4  & 5  \\
-Hydralazine   & 0.17 & 143 & 3  & 4  & 5  && 0.16 & 140 & 3  & 4  & 5  \\
-\hline
-
-\end{tabular}
-
-
-\end{center}
-
-
-\begin{figure}
+We perform a grid search for hyperparameter tuning. More specifically, we take the learning rate and the structure of the fully-connected layers in the networks as our hyperparameters. For the learning rate, we consider $0.001$ and $0.0001$ values and for the fully-connected layers we consider (1) the case where we described our model architecture in ~\ref{ProposedNet} and (2) where we change the output size of the first fully-connected layer after the flatten process to $256$ then we add another fully-connected layer with the output size of $128$, finally we pass through another fully-connected layer with output size $4$. Therefore, for each experiment we will consider the effect of these hyperparameters.
+The results are shown in Table~\ref{tab:hyperparam} where $\alpha$ is the learning rate of the Adam algorithm.
+\begin{table}
   \centering
+  \resizebox{\columnwidth}{!}{%
+
   \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
     \hline
-    \multicolumn{1}{|>{{}}c|}{}&\multicolumn{3}{c|}{Ok}&\multicolumn{3}{c|}{Block page}&\multicolumn{3}{c|}{Server error}&\multicolumn{3}{c|}{Connection error}\\
+    \multicolumn{1}{|>{{}}c|}{}&\multicolumn{3}{c|}{Ok page}&\multicolumn{3}{c|}{Block page}&\multicolumn{3}{c|}{Server error page}&\multicolumn{3}{c|}{Connection error page}\\
     \arrayrulecolor{}
     \arrayrulecolor{black}
     \cline{2-4}     \cline{5-7} \cline{8-10}\cline{11-13}
 
-    \multicolumn{1}{|>{\columncolor{kugray5}}c|}{}&Precision&Recall&F1&Precision&Recall&F1&Precision&Recall&F1&Precision&Recall&F1\\
+    \multicolumn{1}{|>{}c|}{}&Precision&Recall&F1&Precision&Recall&F1&Precision&Recall&F1&Precision&Recall&F1\\
     \hline
-    type 2&8&14&5&2&29&21&12&12&12&43&43&42\\
+    Image (1) $\alpha = 0.001$ &8&14&5&2&29&21&12&12&12&43&43&42\\
     \hline
-     type 2&8&14&5&2&29&21&12&12&12&43&43&42\\
+         Image (2)  $\alpha =0.001$&8&14&5&2&29&21&12&12&12&43&43&42\\
     \hline
-    type 2&8&14&5&2&29&21&12&12&12&43&43&42\\
+     Image (1)   $\alpha =0.0001$&8&14&5&2&29&21&12&12&12&43&43&42\\
     \hline
-     type 2&8&14&5&2&29&21&12&12&12&43&43&42\\
+    Image (2)    $\alpha =0.0001$&8&14&5&2&29&21&12&12&12&43&43&42\\
+    \hline
+        Image (1) $\alpha =0.001$ &8&14&5&2&29&21&12&12&12&43&43&42\\
+    \hline
+         Image (2)  $\alpha =0.001$&8&14&5&2&29&21&12&12&12&43&43&42\\
+    \hline
+     Image (1)   $\alpha =0.0001$&8&14&5&2&29&21&12&12&12&43&43&42\\
+    \hline
+    Image (2)    $\alpha =0.0001$&8&14&5&2&29&21&12&12&12&43&43&42\\
+    \hline
+        HTML (1) $\alpha =0.001$ &8&14&5&2&29&21&12&12&12&43&43&42\\
+    \hline
+         HTML (2)  $\alpha =0.001$&8&14&5&2&29&21&12&12&12&43&43&42\\
+    \hline
+     HTML (1)   $\alpha =0.0001$&8&14&5&2&29&21&12&12&12&43&43&42\\
+    \hline
+    HTML (2)    $\alpha =0.0001$&8&14&5&2&29&21&12&12&12&43&43&42\\
+    \hline
+        HTML (1) $\alpha =0.001$ &8&14&5&2&29&21&12&12&12&43&43&42\\
+    \hline
+         HTML (2)  $\alpha =0.001$&8&14&5&2&29&21&12&12&12&43&43&42\\
+    \hline
+     HTML (1)   $\alpha =0.0001$&8&14&5&2&29&21&12&12&12&43&43&42\\
+    \hline
+    HTML (2)    $\alpha =0.0001$&8&14&5&2&29&21&12&12&12&43&43&42\\
+    \hline
+            Our model (1) $\alpha =0.001$ &8&14&5&2&29&21&12&12&12&43&43&42\\
+    \hline
+            Our model (2)  $\alpha =0.001$&8&14&5&2&29&21&12&12&12&43&43&42\\
+    \hline
+            Our model (1)   $\alpha =0.0001$&8&14&5&2&29&21&12&12&12&43&43&42\\
+    \hline
+            Our model (2)    $\alpha =0.0001$&8&14&5&2&29&21&12&12&12&43&43&42\\
+    \hline
+            Our model (1) $\alpha =0.001$ &8&14&5&2&29&21&12&12&12&43&43&42\\
+    \hline
+            Our model (2)  $\alpha =0.001$&8&14&5&2&29&21&12&12&12&43&43&42\\
+    \hline
+            Our model (1)   $\alpha =0.0001$&8&14&5&2&29&21&12&12&12&43&43&42\\
+    \hline
+            Our model (2)    $\alpha =0.0001$&8&14&5&2&29&21&12&12&12&43&43&42\\
     \hline
   \end{tabular}
-  \caption{Distribution of the types by rank}
-  \label{fig:typeDistribution}
-\end{figure}
+  }
+  \caption{Performance metrics in various scenarios}
+  \label{tab:hyperparam}
+\end{table}
+
+\section{Results}
+
+
 
 
 \section{Discussion and Conclusions}
